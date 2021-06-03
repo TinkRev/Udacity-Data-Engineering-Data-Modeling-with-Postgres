@@ -9,7 +9,8 @@ output: create a database schema and ETL pipeline for this analysis
 - songplays - records in log data associated with song plays i.e. records with page NextSong
 `songplays(songplay_id serial, start_time timestamp, user_id int, level varchar, song_id varchar, artist_id varchar, session_id int, location varchar, user_agent text)`
 ### Dimension Tables
-- users - users in the app
+- users - users in the app; 
+insert if duplicated then update current level: someone subscribes by paying a fee who happened to be a free user before.
 `users(user_id int, first_name varchar, last_name varchar, gender varchar, level varchar)`
 - songs - songs in music database
 `songs(song_id varchar, title varchar, artist_id varchar, year int, duration numeric)`

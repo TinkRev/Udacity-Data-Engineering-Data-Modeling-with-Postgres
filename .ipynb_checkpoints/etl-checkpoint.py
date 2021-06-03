@@ -6,6 +6,17 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    """
+    Description: This function can be used to read the file in the filepath (data/song_data)
+    to get the song and artist info and used to populate the songss and artists dim tables.
+
+    Arguments:
+        cur: the cursor object. 
+        filepath: song data file path. 
+
+    Returns:
+        None
+    """
     # open song file
     df = pd.read_json(filepath, lines=True)
 
@@ -14,11 +25,22 @@ def process_song_file(cur, filepath):
     cur.execute(song_table_insert, song_data)
     
     # insert artist record
-    artist_data = df[["artist_id","artist_name","artist_location", "artist_latitude","artist_longitude"]].values[0].tolist()
+    artist_data = df[["artist_id","artist_name","artist_location", "artist_latitude","artist_longitude","artist_location", "artist_latitude","artist_longitude"]].values[0].tolist()
     cur.execute(artist_table_insert, artist_data)
 
 
 def process_log_file(cur, filepath):
+    """
+    Description: This function can be used to read the file in the filepath (data/log_data)
+    to get the user and time info and used to populate the users and time dim tables.
+
+    Arguments:
+        cur: the cursor object. 
+        filepath: log data file path. 
+
+    Returns:
+        None
+    """
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -38,7 +60,7 @@ def process_log_file(cur, filepath):
         cur.execute(time_table_insert, list(row))
 
     # load user table
-    user_df = df[["userId","firstName","lastName","gender","level"]]
+    user_df = df[["userId","firstName","lastName","gender","level","level"]]
 
     # insert user records
     for i, row in user_df.iterrows():
@@ -62,6 +84,17 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+    """
+    Description: This function can be used to read the file in the specified filepath
+    to get the json file and used to execute specified function.
+
+    Arguments:
+        cur: the cursor object. 
+        filepath: song data file path. 
+
+    Returns:
+        None
+    """
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -81,6 +114,17 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """
+    Description: This function is etl.py entrance
+    to connect database and process json data from data directory.
+
+    Arguments:
+        cur: the cursor object. 
+        filepath: song data file path. 
+
+    Returns:
+        None
+    """
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 

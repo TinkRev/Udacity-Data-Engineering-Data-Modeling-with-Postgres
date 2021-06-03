@@ -8,37 +8,146 @@ time_table_drop = "drop table if exists time"
 
 # CREATE TABLES
 
-songplay_table_create = (""" Create table if not exists songplays (songplay_id serial, start_time timestamp, user_id int, level varchar, song_id varchar, artist_id varchar, session_id int, location varchar, user_agent text)
+songplay_table_create = (""" 
+Create table if not exists songplays 
+    (
+        songplay_id serial PRIMARY KEY, 
+        start_time timestamp NOT NULL, 
+        user_id int NOT NULL, 
+        level varchar NOT NULL, 
+        song_id varchar NULL, 
+        artist_id varchar NULL, 
+        session_id int NOT NULL, 
+        location varchar NOT NULL, 
+        user_agent text NOT NULL
+    )
 """)
 
-user_table_create = (""" Create table if not exists users (user_id int, first_name varchar, last_name varchar, gender varchar, level varchar)
+user_table_create = (""" 
+Create table if not exists users 
+    (
+        user_id int PRIMARY KEY, 
+        first_name varchar NOT NULL, 
+        last_name varchar NOT NULL, 
+        gender varchar NOT NULL, 
+        level varchar NOT NULL
+    )
 """)
 
-song_table_create = ("""Create table if not exists songs (song_id varchar, title varchar, artist_id varchar, year int, duration numeric)
+song_table_create = ("""
+Create table if not exists songs 
+    (
+        song_id varchar PRIMARY KEY, 
+        title varchar NOT NULL, 
+        artist_id varchar NOT NULL, 
+        year int NOT NULL, 
+        duration numeric NOT NULL
+    )
 """)
 
-artist_table_create = ("""Create table if not exists artists (artist_id varchar, name varchar, location text, latitude varchar null, longitude varchar null)
+artist_table_create = ("""
+Create table if not exists artists 
+    (
+        artist_id varchar PRIMARY KEY, 
+        name varchar NOT NULL, 
+        location text NOT NULL, 
+        latitude varchar null, 
+        longitude varchar null
+    )
 """)
 
-time_table_create = ("""Create table if not exists time (start_time timestamp, hour int null, day int null, week int null, month int null, year int null, weekday int null)
+time_table_create = ("""
+Create table if not exists time 
+    (
+        start_time timestamp PRIMARY KEY, 
+        hour int NOT NULL, day int NOT NULL, 
+        week int NOT NULL, 
+        month int NOT NULL, 
+        year int NOT NULL, 
+        weekday int NOT NULL
+    )
 """)
 
 # INSERT RECORDS
 
-songplay_table_insert = ("""insert into songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) values  (%s,%s,%s,%s,%s,%s,%s,%s)""")
+songplay_table_insert = ("""
+Insert into songplays 
+    (
+        start_time, 
+        user_id, 
+        level, 
+        song_id, 
+        artist_id, 
+        session_id, 
+        location, 
+        user_agent
+    ) 
+    values (%s,%s,%s,%s,%s,%s,%s,%s)
+""")
 
-user_table_insert = ("""insert into users (user_id, first_name, last_name, gender, level) values  (%s,%s,%s,%s,%s)""")
+user_table_insert = ("""
+Insert into users 
+    (
+        user_id, 
+        first_name, 
+        last_name, 
+        gender, 
+        level
+    ) 
+    values (%s,%s,%s,%s,%s) 
+    ON CONFLICT (user_id) DO UPDATE SET level = %s;
+""")
 
-song_table_insert = ("""insert into songs (song_id, title, artist_id, year, duration) values  (%s,%s,%s,%s,%s)""")
+song_table_insert = ("""
+Insert into songs 
+    (
+        song_id, 
+        title, 
+        artist_id, 
+        year, 
+        duration
+    ) 
+    values (%s,%s,%s,%s,%s)
+    ON CONFLICT (song_id) DO NOTHING
+""")
 
-artist_table_insert = ("""insert into artists (artist_id, name, location, latitude, longitude) values  (%s,%s,%s,%s,%s)""")
+artist_table_insert = ("""
+Insert into artists 
+    (
+        artist_id, 
+        name, 
+        location, 
+        latitude, 
+        longitude
+    ) 
+    values (%s,%s,%s,%s,%s)
+    ON CONFLICT (artist_id) DO UPDATE SET location = %s, latitude = %s, longitude= %s;
+""")
 
 
-time_table_insert = ("""insert into time (start_time, hour, day, week, month, year, weekday) values (to_timestamp(%s),%s,%s,%s,%s,%s,%s)""")
+time_table_insert = ("""
+Insert into time 
+    (
+        start_time, 
+        hour, 
+        day, 
+        week, 
+        month, 
+        year, 
+        weekday
+    ) 
+    values (to_timestamp(%s),%s,%s,%s,%s,%s,%s)
+    ON CONFLICT (start_time) DO NOTHING
+""")
 
 # FIND SONGS
 
-song_select = ("""select song_id,songs.artist_id from songs join artists on songs.artist_id= artists.artist_id where title=%s and artists.name=%s and duration=%s""")
+song_select = ("""
+Select song_id, songs.artist_id 
+From songs 
+Join artists on songs.artist_id= artists.artist_id 
+Where title=%s and artists.name=%s and duration=%s
+""")
 
 # QUERY LISTS
 
